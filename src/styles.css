@@ -396,32 +396,44 @@ input { font-family: inherit; }
 }
 
 .main-tab {
-  padding: 10px 14px;
+  padding: 11px 2px;
+  margin: 0 12px;
   font-size: 13px;
   font-weight: 500;
   color: var(--ink-4);
   cursor: pointer;
+  border: none;
+  background: none;
   border-bottom: 2px solid transparent;
-  transition: all 0.15s;
+  transition: color 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.main-tab:first-child {
+  margin-left: 0;
 }
 
 .main-tab:hover {
-  color: var(--ink-3);
+  color: var(--ink-2);
 }
 
 .main-tab.active {
   color: var(--ink);
-  border-bottom-color: var(--ink);
+  border-bottom-color: var(--accent);
   font-weight: 600;
 }
 
 .tab-count {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  background: var(--bg-subtle);
-  padding: 1px 6px;
-  border-radius: 999px;
-  margin-left: 6px;
+  font-size: 10.5px;
+  color: var(--ink-5);
+  font-weight: 400;
+}
+
+.main-tab.active .tab-count {
+  color: var(--accent-ink);
 }
 
 .main-content {
