@@ -836,6 +836,21 @@ input { font-family: inherit; }
   border-radius: 999px;
 }
 
+.rail-title-clickable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s;
+}
+
+.rail-title-clickable:hover {
+  color: var(--ink);
+}
+
+.rail-chevron {
+  color: var(--ink-4);
+  transition: transform 0.15s;
+}
+
 /* ─── Bid Card (Rail) ─── */
 .bid-card {
   border-radius: 8px;
