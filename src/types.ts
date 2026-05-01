@@ -62,3 +62,25 @@ export interface Toast {
   variant: 'default' | 'win' | 'warn';
   icon?: string;
 }
+
+export interface TransferPackage {
+  id: string;
+  name: string;
+  transfers: number;
+  pricePerTransfer: number;
+  total: number;
+  popular?: boolean;
+}
+
+export interface TransferOrder {
+  id: string;
+  vertical: Vertical;
+  tier: Tier;
+  package: TransferPackage;
+  bidFloor: number;
+  pitchScript: string;
+  targetStates: string[];
+  status: 'pending' | 'active' | 'completed';
+  transfersDelivered: number;
+  createdAt: string;
+}

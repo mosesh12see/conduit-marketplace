@@ -13,6 +13,7 @@ import BidModal from './components/BidModal';
 import ToastStack from './components/ToastStack';
 import Tabs from './components/Tabs';
 import TweaksPanel from './tweaks/TweaksPanel';
+import TransferCheckout from './components/TransferCheckout';
 import Icon from './components/Icon';
 
 import './styles.css';
@@ -55,6 +56,7 @@ export default function App() {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [platinumOnly, setPlatinumOnly] = useState(false);
   const [topScore, setTopScore] = useState(false);
+  const [activePage, setActivePage] = useState('feed');
 
   const addToast = useCallback((message: string, variant: Toast['variant'] = 'default') => {
     const toast = makeToast(message, variant);
@@ -127,8 +129,23 @@ export default function App() {
   return (
     <div className="app-shell">
       <Header />
-      <Sidebar activeVertical={activeVertical} onVerticalChange={setActiveVertical} verticalCounts={verticalCounts} />
+      <Sidebar
+        activeVertical={activeVertical}
+        onVerticalChange={(v) => { setActiveVertical(v); setActivePage('feed'); }}
+        verticalCounts={verticalCounts}
+        activePage={activePage}
+        onPageChange={setActivePage}
+      />
       <main className="main">
+        {activePage === 'checkout' ? (
+          <div className="main-content">
+            <TransferCheckout onComplete={(order) => {
+              addToast(`Order placed — ${order.package.transfers} ${VERTICAL_LABELS[order.vertical]} transfers at $${order.bidFloor}/ea`, 'win');
+              setActivePage('feed');
+            }} />
+          </div>
+        ) : (
+        <>
         <Tabs
           active={activeTab}
           onChange={setActiveTab}
@@ -202,6 +219,8 @@ export default function App() {
             </div>
           )}
         </div>
+        </>
+        )}
       </main>
       <Rail activeBids={activeBids} wonLeads={wonLeads} />
       <BidModal listing={modalListing} onClose={() => setModalListing(null)} onSubmit={handleBidSubmit} />

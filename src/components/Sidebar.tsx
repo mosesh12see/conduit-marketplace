@@ -6,9 +6,11 @@ interface Props {
   activeVertical: string;
   onVerticalChange: (v: string) => void;
   verticalCounts: Record<string, number>;
+  activePage: string;
+  onPageChange: (page: string) => void;
 }
 
-export default function Sidebar({ activeVertical, onVerticalChange, verticalCounts }: Props) {
+export default function Sidebar({ activeVertical, onVerticalChange, verticalCounts, activePage, onPageChange }: Props) {
   return (
     <aside className="sidebar">
       <div className="sidebar-section">
@@ -36,6 +38,13 @@ export default function Sidebar({ activeVertical, onVerticalChange, verticalCoun
 
       <div className="sidebar-section">
         <div className="sidebar-label">Workspace</div>
+        <div
+          className={`sidebar-item${activePage === 'checkout' ? ' active' : ''}`}
+          onClick={() => onPageChange('checkout')}
+        >
+          <Icon name="zap" size={16} />
+          <span>Buy transfers</span>
+        </div>
         <div className="sidebar-item">
           <Icon name="briefcase" size={16} />
           <span>Active deals</span>
