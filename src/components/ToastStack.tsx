@@ -1,25 +1,25 @@
 import Icon from './Icon';
 import type { Toast } from '../types';
 
-interface ToastStackProps {
+interface Props {
   toasts: Toast[];
 }
 
-const VARIANT_ICONS: Record<Toast['variant'], string> = {
-  default: 'bell',
+const variantIcon: Record<string, string> = {
+  default: 'zap',
   win: 'check',
-  warn: 'zap',
+  warn: 'arrowUp',
 };
 
-export default function ToastStack({ toasts }: ToastStackProps) {
-  if (toasts.length === 0) return null;
-
+export default function ToastStack({ toasts }: Props) {
   return (
     <div className="toast-stack">
       {toasts.map((toast) => (
-        <div key={toast.id} className={`toast toast-${toast.variant}`}>
-          <Icon name={toast.icon ?? VARIANT_ICONS[toast.variant]} size={16} className="toast-icon" />
-          <span className="toast-message">{toast.message}</span>
+        <div key={toast.id} className={`toast ${toast.variant}`}>
+          <div className="toast-icon">
+            <Icon name={variantIcon[toast.variant] || 'zap'} size={14} />
+          </div>
+          {toast.message}
         </div>
       ))}
     </div>

@@ -1,52 +1,47 @@
 import Icon from './Icon';
-import { VERTICAL_ICONS, VERTICAL_LABELS } from '../data/constants';
 import type { ActiveBid } from '../types';
+import { VERTICAL_LABELS, VERTICAL_ICONS } from '../data/constants';
 
-interface BidCardProps {
+interface Props {
   bid: ActiveBid;
 }
 
-export default function BidCard({ bid }: BidCardProps) {
-  const statusClass = bid.status === 'leading' ? 'status-leading' : bid.status === 'outbid' ? 'status-outbid' : `status-${bid.status}`;
-  const minutes = Math.floor(bid.expiresIn / 60);
-  const seconds = bid.expiresIn % 60;
-  const progressPct = Math.min(100, (bid.expiresIn / 600) * 100);
+function formatCountdown(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${s < 10 ? '0' : ''}${s}`;
+}
+
+export default function BidCard({ bid }: Props) {
+  const maxTime = 600;
+  const pct = Math.max(0, Math.min(100, (bid.expiresIn / maxTime) * 100));
+  const urgent = bid.expiresIn < 60;
 
   return (
-    <div className={`bid-card ${statusClass}`}>
+    <div className={`bid-card ${bid.status}`}>
       <div className="bid-card-head">
-        <span className="bid-card-name">{bid.name}</span>
-        <span className={`tier-badge tier-${bid.tier}`}>{bid.tier}</span>
-        <span className={`status-pill ${statusClass}`}>{bid.status}</span>
+        <span className="bid-card-name">
+          {bid.name}
+          <span className={`tier-badge ${bid.tier}`}>{bid.tier}</span>
+        </span>
+        <span className={`bid-card-status ${bid.status}`}>{bid.status}</span>
       </div>
-
       <div className="bid-card-sub">
         <Icon name={VERTICAL_ICONS[bid.vertical]} size={13} />
-        <span>{VERTICAL_LABELS[bid.vertical]}</span>
-        <span className="dot-sep">&middot;</span>
-        <span>{bid.city}, {bid.state}</span>
+        {VERTICAL_LABELS[bid.vertical]} · {bid.city}
       </div>
-
       <div className="bid-card-body">
-        <div className="bid-amount-group">
-          <span className="bid-amount mono">${bid.yourBid}</span>
-          <span className="bid-amount-label">your bid</span>
-        </div>
+        <span className="bid-card-amount mono">${bid.yourBid}</span>
+        <span className="bid-card-label">your bid</span>
         {bid.status === 'outbid' && (
-          <div className="bid-amount-group top-bid">
-            <span className="bid-amount mono">${bid.topBid}</span>
-            <span className="bid-amount-label">top bid</span>
-          </div>
+          <span className="bid-card-label">· top: <span className="mono" style={{ fontWeight: 600 }}>${bid.topBid}</span></span>
         )}
       </div>
-
       <div className="bid-card-timer">
-        <div className="timer-bar">
-          <div className="timer-fill" style={{ width: `${progressPct}%` }} />
+        <div className="bid-bar">
+          <div className={`bid-bar-fill ${bid.status}`} style={{ width: `${pct}%` }} />
         </div>
-        <span className="timer-text mono">
-          {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
-        </span>
+        <div className={`bid-countdown${urgent ? ' urgent' : ''}`}>{formatCountdown(bid.expiresIn)}</div>
       </div>
     </div>
   );

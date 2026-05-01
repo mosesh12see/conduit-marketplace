@@ -1,7 +1,7 @@
-import Icon from './Icon';
 import Sparkline from './Sparkline';
+import Icon from './Icon';
 
-interface StatCardProps {
+interface Props {
   label: string;
   value: string;
   delta: string;
@@ -9,16 +9,22 @@ interface StatCardProps {
   data?: number[];
 }
 
-export default function StatCard({ label, value, delta, positive, data }: StatCardProps) {
+export default function StatCard({ label, value, delta, positive }: Props) {
   return (
     <div className="stat-card">
-      <span className="stat-card-label">{label}</span>
-      <span className="stat-card-value mono">{value}</span>
-      <span className={`stat-card-delta ${positive ? 'positive' : 'negative'}`}>
-        <Icon name={positive ? 'arrowUp' : 'arrowDown'} size={12} className="delta-arrow" />
-        {delta}
-      </span>
-      <Sparkline data={data} color={positive ? 'var(--green)' : 'var(--red)'} />
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <div className="stat-label">{label}</div>
+          <div className="stat-value mono">{value}</div>
+          <div className={`stat-delta ${positive ? 'up' : 'down'}`}>
+            <Icon name={positive ? 'arrowUp' : 'arrowDown'} size={12} />
+            {delta}
+          </div>
+        </div>
+        <div className="stat-sparkline">
+          <Sparkline width={72} height={24} color={positive ? 'var(--accent)' : 'var(--ink-4)'} />
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,121 +1,104 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Icon from './Icon';
-import { VERTICAL_LABELS } from '../data/constants';
 import type { Listing } from '../types';
+import { VERTICAL_LABELS } from '../data/constants';
 
-interface BidModalProps {
+interface Props {
   listing: Listing | null;
   onClose: () => void;
   onSubmit: (listing: Listing, amount: number) => void;
 }
 
-export default function BidModal({ listing, onClose, onSubmit }: BidModalProps) {
-  const [bidAmount, setBidAmount] = useState(0);
+function formatExpiry(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${s < 10 ? '0' : ''}${s}`;
+}
 
-  useEffect(() => {
-    if (listing) setBidAmount(listing.price);
-  }, [listing]);
+export default function BidModal({ listing, onClose, onSubmit }: Props) {
+  const [bidAmount, setBidAmount] = useState(0);
 
   if (!listing) return null;
 
-  const lastFour = listing.id.slice(-4);
-  const minutes = Math.floor(listing.expiresIn / 60);
-  const seconds = listing.expiresIn % 60;
-  const isUrgent = listing.expiresIn < 60;
+  // Reset bid amount when listing changes
+  const price = listing.price;
+  if (bidAmount === 0 || bidAmount < price) {
+    setTimeout(() => setBidAmount(price), 0);
+  }
+
+  const urgent = listing.expiresIn < 60;
+  const closeRate = Math.round(listing.score * 0.4);
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
-          <div className="modal-title-row">
-            <span className="modal-name">{listing.name}</span>
-            <span className={`tier-badge tier-${listing.tier}`}>{listing.tier}</span>
+          <div className="modal-title">
+            {listing.name}
+            <span className={`tier-badge ${listing.tier}`}>{listing.tier}</span>
           </div>
-          <span className="modal-sub">
-            {VERTICAL_LABELS[listing.vertical]} &middot; {listing.city}, {listing.state} &middot; {listing.source}
-          </span>
-          <button className="modal-close" onClick={onClose} aria-label="Close">
+          <div className="modal-sub">
+            {VERTICAL_LABELS[listing.vertical]} lead · {listing.city}, {listing.state} · via {listing.source}
+          </div>
+          <button className="modal-close" onClick={onClose}>
             <Icon name="x" size={18} />
           </button>
         </div>
 
         <div className="modal-body">
-          <div className="masked-details">
-            <div className="detail-item">
-              <Icon name="phone" size={14} />
-              <span className="detail-label">Phone</span>
-              <span className="detail-value mono">+1 (***) ***-{lastFour}</span>
+          <div className="modal-grid">
+            <div>
+              <div className="modal-field-label">Phone</div>
+              <div className="modal-field-value masked mono">+1 (***) ***-{String(Math.floor(Math.random() * 9000 + 1000))}</div>
             </div>
-            <div className="detail-item">
-              <Icon name="mail" size={14} />
-              <span className="detail-label">Email</span>
-              <span className="detail-value mono">****@****.com</span>
+            <div>
+              <div className="modal-field-label">Email</div>
+              <div className="modal-field-value masked mono">{listing.name.split(' ')[0].toLowerCase()}@***.com</div>
             </div>
-            <div className="detail-item">
-              <Icon name="star" size={14} />
-              <span className="detail-label">Quality score</span>
-              <span className="detail-value mono">{listing.score}/100</span>
+            <div>
+              <div className="modal-field-label">Quality score</div>
+              <div className="modal-field-value mono">{listing.score}<span style={{ color: 'var(--ink-4)' }}>/100</span></div>
             </div>
-            <div className="detail-item">
-              <Icon name="clock" size={14} />
-              <span className="detail-label">Contact window</span>
-              <span className="detail-value mono">{listing.contactWindow} min</span>
+            <div>
+              <div className="modal-field-label">Contact window</div>
+              <div className="modal-field-value mono">{listing.contactWindow}m</div>
             </div>
           </div>
 
           <div className="modal-callout">
-            <Icon name="sparkle" size={16} className="callout-icon" />
-            <span>
-              This lead has a <strong>{listing.score}% quality score</strong> and is actively comparing providers.
-              Winning now gives you first contact advantage.
-            </span>
+            <Icon name="sparkle" size={16} />
+            <span>{listing.tags[0]} — full contact details unlock instantly when you win this transfer. Average buyer in your tier closes {closeRate}% of platinum leads.</span>
           </div>
 
-          <div className="bid-input-row">
-            <div className="bid-input-group">
-              <span className="bid-currency">$</span>
-              <input
-                type="number"
-                className="bid-input mono"
-                value={bidAmount}
-                onChange={(e) => setBidAmount(Number(e.target.value))}
-                min={1}
-              />
-            </div>
+          <div className="modal-bid-row">
+            <span className="modal-bid-label">Your bid</span>
+            <span style={{ color: 'var(--ink-4)', fontFamily: "'JetBrains Mono', monospace" }}>$</span>
+            <input
+              type="number"
+              className="modal-bid-input"
+              value={bidAmount}
+              onChange={(e) => setBidAmount(Number(e.target.value))}
+            />
             <button className="quick-btn" onClick={() => setBidAmount((v) => v + 5)}>+5</button>
             <button className="quick-btn" onClick={() => setBidAmount((v) => v + 10)}>+10</button>
           </div>
 
-          <div className="bid-info">
-            <div className="bid-info-item">
-              <span className="bid-info-label">Asking price</span>
-              <span className="bid-info-value mono">${listing.price}</span>
-            </div>
-            <div className="bid-info-item">
-              <span className="bid-info-label">Other bidders</span>
-              <span className="bid-info-value">{listing.bids}</span>
-            </div>
-            <div className="bid-info-item">
-              <span className="bid-info-label">Auto-bid cap</span>
-              <span className="bid-info-value mono">--</span>
-            </div>
+          <div className="modal-context">
+            <span>Asking <strong className="mono">${listing.price}</strong></span>
+            <span>{listing.bids} other bidder{listing.bids !== 1 ? 's' : ''}</span>
+            <span>Auto-bid cap: <strong className="mono">$135</strong></span>
           </div>
         </div>
 
-        <div className="modal-footer">
-          <div className={`expiry-indicator${isUrgent ? ' urgent' : ''}`}>
-            <span className={`expiry-dot${isUrgent ? ' pulse urgent' : ' pulse'}`} />
-            <span className="expiry-text mono">
-              {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
-            </span>
+        <div className="modal-foot">
+          <div className={`modal-timer${urgent ? ' urgent' : ''}`}>
+            <span className={`timer-dot${urgent ? ' urgent' : ''}`} />
+            Expires in <span className="mono">{formatExpiry(listing.expiresIn)}</span>
           </div>
-          <div className="modal-actions">
-            <button className="btn-secondary" onClick={onClose}>Cancel</button>
-            <button
-              className="btn-primary"
-              onClick={() => onSubmit(listing, bidAmount)}
-            >
-              Place bid &middot; ${bidAmount}
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="modal-cancel" onClick={onClose}>Cancel</button>
+            <button className="modal-place" onClick={() => onSubmit(listing, bidAmount)}>
+              Place bid · ${bidAmount}
             </button>
           </div>
         </div>

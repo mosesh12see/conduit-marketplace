@@ -5,53 +5,40 @@ export default function Header() {
     <header className="header">
       <div className="header-left">
         <div className="brand">
-          <div
-            className="brand-icon"
-            style={{
-              width: 24,
-              height: 24,
-              background: '#000',
-              borderRadius: 4,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#fff',
-              fontSize: 14,
-              fontWeight: 700,
-              lineHeight: 1,
-            }}
-          >
-            C
-          </div>
+          <div className="brand-icon">C</div>
           <span className="brand-wordmark">Conduit</span>
           <span className="role-pill">Buyer</span>
         </div>
       </div>
 
       <div className="header-search">
-        <Icon name="search" size={16} className="search-icon" />
-        <input
-          type="text"
-          className="search-input"
-          placeholder="Search by location, intent, source..."
-        />
+        <Icon name="search" size={15} className="search-icon" />
+        <input type="text" className="search-input" placeholder="Search by location, intent, source…" />
         <kbd className="search-hint">⌘K</kbd>
       </div>
 
       <div className="header-right">
         <div className="header-stats">
-          <span className="header-stat">Today: <strong>23 leads</strong></span>
-          <span className="header-stat">Avg CPL: <strong>$55.80</strong></span>
-          <span className="header-stat">Contact rate: <strong>14.2%</strong></span>
+          <div className="header-stat">
+            <span>Today</span>
+            <strong className="mono">23 leads</strong>
+          </div>
+          <div className="header-stat">
+            <span>Avg CPL</span>
+            <strong className="mono">$55.80</strong>
+          </div>
+          <div className="header-stat">
+            <span>Contact rate</span>
+            <strong className="mono accent">78%</strong>
+          </div>
         </div>
-
         <div className="header-actions">
           <button className="icon-btn" aria-label="Notifications">
-            <Icon name="bell" size={18} />
+            <Icon name="bell" size={17} />
           </button>
           <div className="profile-chip">
-            <div className="profile-avatar">MH</div>
-            <span className="profile-name">Moses</span>
+            <div className="profile-avatar">JM</div>
+            <span className="profile-name">Jordan M.</span>
           </div>
         </div>
       </div>

@@ -1,54 +1,28 @@
 import { useMemo } from 'react';
 
-interface SparklineProps {
+interface Props {
   data?: number[];
   width?: number;
   height?: number;
   color?: string;
 }
 
-function randomWalk(count: number): number[] {
-  const pts: number[] = [50];
-  for (let i = 1; i < count; i++) {
-    const delta = (Math.random() - 0.45) * 20;
-    pts.push(Math.max(5, Math.min(95, pts[i - 1] + delta)));
-  }
-  return pts;
-}
-
-export default function Sparkline({
-  data,
-  width = 80,
-  height = 28,
-  color = 'var(--accent)',
-}: SparklineProps) {
+export default function Sparkline({ data, width = 72, height = 24, color = 'var(--accent)' }: Props) {
   const points = useMemo(() => {
-    const raw = data && data.length > 1 ? data : randomWalk(8 + Math.floor(Math.random() * 5));
-    const min = Math.min(...raw);
-    const max = Math.max(...raw);
+    const d = data || Array.from({ length: 10 }, () => Math.random());
+    const min = Math.min(...d);
+    const max = Math.max(...d);
     const range = max - min || 1;
-    const padY = 2;
-    const usableH = height - padY * 2;
-
-    return raw
-      .map((v, i) => {
-        const x = (i / (raw.length - 1)) * width;
-        const y = padY + usableH - ((v - min) / range) * usableH;
-        return `${x},${y}`;
-      })
-      .join(' ');
+    return d.map((v, i) => {
+      const x = (i / (d.length - 1)) * width;
+      const y = height - ((v - min) / range) * (height - 4) - 2;
+      return `${x},${y}`;
+    }).join(' ');
   }, [data, width, height]);
 
   return (
-    <svg width={width} height={height} className="sparkline">
-      <polyline
-        points={points}
-        fill="none"
-        stroke={color}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none">
+      <polyline points={points} stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
