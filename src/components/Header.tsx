@@ -7,7 +7,7 @@ export default function Header() {
         <div className="brand">
           <div className="brand-icon">C</div>
           <span className="brand-wordmark">Conduit</span>
-          <span className="role-pill">Buyer</span>
+          <span className="role-pill">Marketplace</span>
         </div>
       </div>
 
@@ -36,10 +36,7 @@ export default function Header() {
           <button className="icon-btn" aria-label="Notifications">
             <Icon name="bell" size={17} />
           </button>
-          <div className="profile-chip">
-            <div className="profile-avatar">JM</div>
-            <span className="profile-name">Jordan M.</span>
-          </div>
+          <button className="checkout-next-btn" style={{ padding: '6px 14px', fontSize: '12.5px' }}>Sign in</button>
         </div>
       </div>
     </header>
