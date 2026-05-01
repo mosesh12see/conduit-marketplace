@@ -1,0 +1,7 @@
+name = "conduit-marketplace"
+compatibility_date = "2025-05-01"
+pages_build_output_dir = "dist"
+# Add service bindings here as needed:
+# [[services]]
+# binding = "MY_WORKER"
+# service = "worker-name"
