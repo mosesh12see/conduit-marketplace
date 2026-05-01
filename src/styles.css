@@ -2065,6 +2065,48 @@ input { font-family: inherit; }
   line-height: 1.4;
 }
 
+/* Account step */
+.checkout-account-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.checkout-account-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checkout-text-input {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s;
+  background: var(--bg-elev);
+  font-family: 'Inter', sans-serif;
+}
+
+.checkout-text-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.checkout-text-input::placeholder {
+  color: var(--ink-5);
+}
+
+.checkout-account-terms {
+  font-size: 11px;
+  color: var(--ink-4);
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
 /* ─── Utilities ─── */
 .sr-only {
   position: absolute;

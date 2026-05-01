@@ -49,7 +49,7 @@ const TARGET_STATES = [
   'AZ', 'CA', 'CO', 'FL', 'GA', 'ID', 'IL', 'NC', 'NM', 'NV', 'OH', 'OR', 'TN', 'TX', 'UT', 'WA',
 ];
 
-const STEP_LABELS = ['Type', 'Package', 'Customize', 'Review'];
+const STEP_LABELS = ['Type', 'Package', 'Customize', 'Account', 'Review'];
 
 const STARTER_PRICE = 35;
 
@@ -65,6 +65,10 @@ export default function TransferCheckout({ onComplete }: Props) {
   const [bidFloor, setBidFloor] = useState<number>(35);
   const [pitchScript, setPitchScript] = useState<string>('');
   const [targetStates, setTargetStates] = useState<string[]>([]);
+  const [accountName, setAccountName] = useState('');
+  const [accountEmail, setAccountEmail] = useState('');
+  const [accountCompany, setAccountCompany] = useState('');
+  const [accountPhone, setAccountPhone] = useState('');
 
   // On step 2 mount, set default pitch script if empty
   useEffect(() => {
@@ -296,8 +300,78 @@ export default function TransferCheckout({ onComplete }: Props) {
         </div>
       )}
 
-      {/* Step 3 — Review */}
-      {step === 3 && selectedVertical && selectedTier && selectedPackage && (
+      {/* Step 3 — Create account */}
+      {step === 3 && (
+        <div className="checkout-section">
+          <h2 className="checkout-title">Create your account</h2>
+          <p className="checkout-subtitle">
+            Set up your buyer account to place orders and receive transfers.
+          </p>
+
+          <div className="checkout-account-grid">
+            <div className="checkout-account-field">
+              <label className="checkout-label">Full name</label>
+              <input
+                type="text"
+                className="checkout-text-input"
+                placeholder="John Smith"
+                value={accountName}
+                onChange={(e) => setAccountName(e.target.value)}
+              />
+            </div>
+            <div className="checkout-account-field">
+              <label className="checkout-label">Work email</label>
+              <input
+                type="email"
+                className="checkout-text-input"
+                placeholder="john@company.com"
+                value={accountEmail}
+                onChange={(e) => setAccountEmail(e.target.value)}
+              />
+            </div>
+            <div className="checkout-account-field">
+              <label className="checkout-label">Company name</label>
+              <input
+                type="text"
+                className="checkout-text-input"
+                placeholder="Acme Solar LLC"
+                value={accountCompany}
+                onChange={(e) => setAccountCompany(e.target.value)}
+              />
+            </div>
+            <div className="checkout-account-field">
+              <label className="checkout-label">Phone number</label>
+              <input
+                type="tel"
+                className="checkout-text-input"
+                placeholder="(555) 123-4567"
+                value={accountPhone}
+                onChange={(e) => setAccountPhone(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <p className="checkout-account-terms">
+            By creating an account you agree to Conduit's Terms of Service and Privacy Policy.
+          </p>
+
+          <div className="checkout-nav">
+            <button className="checkout-back-btn" onClick={() => setStep(2)}>
+              Back
+            </button>
+            <button
+              className="checkout-next-btn"
+              disabled={!accountName.trim() || !accountEmail.trim() || !accountPhone.trim()}
+              onClick={() => setStep(4)}
+            >
+              Continue to review
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Step 4 — Review */}
+      {step === 4 && selectedVertical && selectedTier && selectedPackage && (
         <div className="checkout-section">
           <h2 className="checkout-title">Review your order</h2>
 
